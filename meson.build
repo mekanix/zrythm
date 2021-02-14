@@ -735,6 +735,11 @@ fftw3_deps = [
     'fftw3f_threads', required: false,
     static: all_static),
   ]
+
+if os_freebsd
+  cdata.set('HAVE_OSS', 1)
+endif
+
 if os_darwin or os_freebsd
   fftw3_deps += [
     cc.find_library (

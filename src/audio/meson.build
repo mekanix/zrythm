@@ -44,6 +44,7 @@ audio_srcs = [
   'engine_alsa.c',
   'engine_dummy.c',
   'engine_jack.c',
+  'engine_oss.c',
   'engine_pa.c',
   'engine_pulse.c',
   'engine_rtaudio.c',

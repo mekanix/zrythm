@@ -53,6 +53,7 @@
 #include "audio/engine_alsa.h"
 #include "audio/engine_dummy.h"
 #include "audio/engine_jack.h"
+#include "audio/engine_oss.h"
 #include "audio/engine_pa.h"
 #include "audio/engine_pulse.h"
 #include "audio/engine_rtaudio.h"
@@ -200,6 +201,11 @@ engine_pre_setup (
     case AUDIO_BACKEND_ASIO_RTAUDIO:
       ret =
         engine_rtaudio_setup (self);
+      break;
+#endif
+#ifdef HAVE_OSS
+    case AUDIO_BACKEND_OSS:
+      ret = engine_oss_setup(self);
       break;
 #endif
     default:
@@ -1490,6 +1496,11 @@ engine_free (
 #ifdef HAVE_PULSEAUDIO
     case AUDIO_BACKEND_PULSEAUDIO:
       engine_pulse_tear_down (self);
+      break;
+#endif
+#ifdef HAVE_OSS
+    case AUDIO_BACKEND_OSS:
+      engine_oss_tear_down (self);
       break;
 #endif
     case AUDIO_BACKEND_DUMMY:

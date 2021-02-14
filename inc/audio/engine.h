@@ -197,6 +197,7 @@ typedef enum AudioBackend
   AUDIO_BACKEND_WASAPI_LIBSOUNDIO,
   AUDIO_BACKEND_WASAPI_RTAUDIO,
   AUDIO_BACKEND_ASIO_RTAUDIO,
+  AUDIO_BACKEND_OSS,
   NUM_AUDIO_BACKENDS,
 } AudioBackend;
 
@@ -234,6 +235,7 @@ static const char * audio_backend_str[] =
   "WASAPI (libsoundio)",
   "WASAPI (rtaudio)",
   "ASIO (rtaudio)",
+  "OSS",
 };
 
 /**
@@ -534,6 +536,10 @@ typedef struct AudioEngine
   pa_stream *            pulse_stream;
 
   gboolean               pulse_notified_underflow;
+#endif
+
+#ifdef HAVE_OSS
+  int fd;
 #endif
 
   /**

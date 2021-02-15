@@ -46,6 +46,7 @@ engine_oss_setup (AudioEngine *self)
   int error;
   int tmp;
   /* Open the device for read and write */
+  self->device = "/dev/dsp";
   self->fd = open(self->device, O_RDWR);
   checkError(self->fd, "open");
 
@@ -111,8 +112,7 @@ engine_oss_setup (AudioEngine *self)
   /* When all is set and ready to go, get the size of buffer */
   error = ioctl(self->fd, SNDCTL_DSP_GETOSPACE, &(self->bufferInfo));
   checkError(error, "SNDCTL_DSP_GETOSPACE");
-  /* self->sampleCount = self->bufferInfo.bytes / self->sampleSize; */
-  /* self->nsamples =  self->sampleCount / self->channels; */
+  self->block_length = self->bufferInfo.bytes / 4 / self->audioInfo.max_channels;
 
   g_message ("OSS setup complete");
   return 0;

@@ -59,10 +59,8 @@ engine_oss_setup (AudioEngine *self)
     g_message("samplerate of %uHz!\n", self->sample_rate);
     exit(1);
   }
+  self->audioInfo.max_channels = 2;
 
-  /* Set number of channels. If number of channels is chosen to the value
-   * near the one wanted, save it in config
-   */
   tmp = self->audioInfo.max_channels;
   error = ioctl(self->fd, SNDCTL_DSP_CHANNELS, &tmp);
   checkError(error, "SNDCTL_DSP_CHANNELS");
@@ -71,8 +69,8 @@ engine_oss_setup (AudioEngine *self)
     g_message("%s doesn't support chosen ", self->device);
     g_message("channel count of %d", self->audioInfo.max_channels);
     g_message(", set to %d!\n", tmp);
+    exit(1);
   }
-  self->audioInfo.max_channels = tmp;
 
   /* Set format, or bit size: 8, 16, 24 or 32 bit sample */
   tmp = self->format;

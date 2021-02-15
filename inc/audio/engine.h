@@ -63,6 +63,10 @@
 #include <rtaudio/rtaudio_c.h>
 #endif
 
+#ifdef HAVE_OSS
+#include <sys/soundcard.h>
+#endif
+
 typedef struct StereoPorts StereoPorts;
 typedef struct Port Port;
 typedef struct Channel Channel;
@@ -539,8 +543,10 @@ typedef struct AudioEngine
 #endif
 
 #ifdef HAVE_OSS
-  int fd;
   char *device;
+  int fd;
+  int frag;
+  int format;
   oss_audioinfo audioInfo;
   audio_buf_info bufferInfo;
 #endif

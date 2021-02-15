@@ -1,5 +1,4 @@
 #include <sys/ioctl.h>
-#include <sys/soundcard.h>
 
 #include "audio/channel.h"
 #include "audio/engine.h"
@@ -60,24 +59,20 @@ engine_oss_setup (AudioEngine *self)
     g_message("samplerate of %uHz!\n", self->sample_rate);
     exit(1);
   }
-  if (self->channels < 1)
-  {
-    self->channels = self->audioInfo.max_channels;
-  }
 
   /* Set number of channels. If number of channels is chosen to the value
    * near the one wanted, save it in config
    */
-  tmp = self->channels;
+  tmp = self->audioInfo.max_channels;
   error = ioctl(self->fd, SNDCTL_DSP_CHANNELS, &tmp);
   checkError(error, "SNDCTL_DSP_CHANNELS");
-  if (tmp != self->channels) /* or check if tmp is close enough? */
+  if (tmp != self->audioInfo.max_channels) /* or check if tmp is close enough? */
   {
-    fprintf(stderr, "%s doesn't support chosen ", self->device);
-    fprintf(stderr, "channel count of %d", self->channels);
-    fprintf(stderr, ", set to %d!\n", tmp);
+    g_message("%s doesn't support chosen ", self->device);
+    g_message("channel count of %d", self->audioInfo.max_channels);
+    g_message(", set to %d!\n", tmp);
   }
-  self->channels = tmp;
+  self->audioInfo.max_channels = tmp;
 
   /* Set format, or bit size: 8, 16, 24 or 32 bit sample */
   tmp = self->format;
@@ -103,12 +98,7 @@ engine_oss_setup (AudioEngine *self)
     exit(1);
   }
 
-  /* If desired frag is smaller than minimum, based on number of channels
-   * and format (size in bits: 8, 16, 24, 32), set that as frag. Buffer size
-   * is 2^frag, but the real size of the buffer will be read when the
-   * configuration of the device is successfull
-   */
-  int minFrag = size2frag(self->sampleSize * self->channels);
+  int minFrag = size2frag(4 * self->audioInfo.max_channels);
   if (self->frag < minFrag) { self->frag = minFrag; }
 
   /* Allocate buffer in fragments. Total buffer will be split in number

@@ -540,6 +540,9 @@ typedef struct AudioEngine
 
 #ifdef HAVE_OSS
   int fd;
+  char *device;
+  oss_audioinfo audioInfo;
+  audio_buf_info bufferInfo;
 #endif
 
   /**

@@ -22,7 +22,7 @@ checkError(const int value, const char *message)
 {
   if (value == -1)
   {
-    fprintf(stderr, "OSS error: %s %s\n", message, strerror(errno));
+    g_message("OSS error: %s %s\n", message, strerror(errno));
     exit(1);
   }
 }
@@ -80,7 +80,7 @@ engine_oss_setup (AudioEngine *self)
   checkError(error, "SNDCTL_DSP_SETFMT");
   if (tmp != self->format)
   {
-    fprintf(stderr, "%s doesn't support chosen sample format!\n", self->device);
+    g_message("%s doesn't support chosen sample format!\n", self->device);
     exit(1);
   }
 
@@ -94,7 +94,7 @@ engine_oss_setup (AudioEngine *self)
   checkError(error, "SNDCTL_DSP_GETCAPS");
   if (!(self->audioInfo.caps & PCM_CAP_DUPLEX))
   {
-    fprintf(stderr, "Device doesn't support full duplex!\n");
+    g_message("Device doesn't support full duplex!\n");
     exit(1);
   }
 

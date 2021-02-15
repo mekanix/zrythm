@@ -54,10 +54,10 @@ engine_oss_setup (AudioEngine *self)
   self->audioInfo.dev = -1;
   error = ioctl(self->fd, SNDCTL_ENGINEINFO, &(self->audioInfo));
   checkError(error, "SNDCTL_ENGINEINFO");
-  if (self->audioInfo.min_rate > self->sampleRate || self->sampleRate > self->audioInfo.max_rate)
+  if ((sample_rate_t)self->audioInfo.min_rate > self->sample_rate || self->sample_rate > (sample_rate_t)self->audioInfo.max_rate)
   {
-    fprintf(stderr, "%s doesn't support chosen ", self->device);
-    fprintf(stderr, "samplerate of %dHz!\n", self->sampleRate);
+    g_message("%s doesn't support chosen ", self->device);
+    g_message("samplerate of %uHz!\n", self->sample_rate);
     exit(1);
   }
   if (self->channels < 1)
@@ -90,7 +90,7 @@ engine_oss_setup (AudioEngine *self)
   }
 
   /* Most common values for samplerate (in kHz): 44.1, 48, 88.2, 96 */
-  tmp = self->sampleRate;
+  tmp = self->sample_rate;
   error = ioctl(self->fd, SNDCTL_DSP_SPEED, &tmp);
   checkError(error, "SNDCTL_DSP_SPEED");
 

@@ -49,12 +49,14 @@ audio_thread (void * _self)
   int8_t obuf[bytes];
   while (1)
   {
-    /* read
-     * convert input to non-inverleaved
+    read(self->fd, ibuf, bytes);
+    /* convert input to non-inverleaved
      * engine_process
      * convert output to interleaved
-     * write
      */
+    engine_process(self, self->block_length);
+    /* self->monitor_out->l->buf */
+    write(self->fd, obuf, bytes);
   }
   return NULL;
 }
@@ -139,6 +141,8 @@ engine_oss_setup (AudioEngine *self)
     g_message("Failed to create OSS audio thread:");
     return -1;
   }
+
+  engine_realloc_port_buffers(AUDIO_ENGINE, self->block_length);
 
   g_message ("OSS setup complete");
   return 0;

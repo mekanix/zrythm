@@ -527,10 +527,7 @@ engine_alsa_setup (
       2 * sizeof (float) * self->block_length);
 
   pthread_t thread_id;
-  int ret =
-    pthread_create (
-      &thread_id, NULL,
-      &audio_thread, self);
+  int ret = pthread_create (&thread_id, NULL, &audio_thread, self);
   if (ret)
     {
       perror (

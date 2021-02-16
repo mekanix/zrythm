@@ -23,7 +23,7 @@ checkError(const int value, const char *message)
 {
   if (value == -1)
   {
-    g_message("OSS error: %s %s\n", message, strerror(errno));
+    g_message("OSS error: %s %s", message, strerror(errno));
     exit(1);
   }
 }
@@ -44,9 +44,17 @@ static void *
 audio_thread (void * _self)
 {
   AudioEngine * self = (AudioEngine *) _self;
+  int bytes = self->bufferInfo.bytes;
+  int8_t ibuf[bytes];
+  int8_t obuf[bytes];
   while (1)
   {
-    // TODO
+    /* read
+     * convert input to non-inverleaved
+     * engine_process
+     * convert output to interleaved
+     * write
+     */
   }
   return NULL;
 }
@@ -69,8 +77,7 @@ engine_oss_setup (AudioEngine *self)
   checkError(error, "SNDCTL_ENGINEINFO");
   if ((sample_rate_t)self->audioInfo.min_rate > self->sample_rate || self->sample_rate > (sample_rate_t)self->audioInfo.max_rate)
   {
-    g_message("%s doesn't support chosen ", self->device);
-    g_message("samplerate of %uHz!\n", self->sample_rate);
+    g_message("%s doesn't support chosen samplerate of %uHz!", self->device, self->sample_rate);
     exit(1);
   }
   self->audioInfo.max_channels = 2;
@@ -80,9 +87,7 @@ engine_oss_setup (AudioEngine *self)
   checkError(error, "SNDCTL_DSP_CHANNELS");
   if (tmp != self->audioInfo.max_channels) /* or check if tmp is close enough? */
   {
-    g_message("%s doesn't support chosen ", self->device);
-    g_message("channel count of %d", self->audioInfo.max_channels);
-    g_message(", set to %d!\n", tmp);
+    g_message("%s doesn't support chosen channel count of %d, set to %d!", self->device, self->audioInfo.max_channels, tmp);
     exit(1);
   }
 
@@ -93,7 +98,7 @@ engine_oss_setup (AudioEngine *self)
   checkError(error, "SNDCTL_DSP_SETFMT");
   if (tmp != self->format)
   {
-    g_message("%s doesn't support chosen sample format!\n", self->device);
+    g_message("%s doesn't support chosen sample format!", self->device);
     exit(1);
   }
 
@@ -107,7 +112,7 @@ engine_oss_setup (AudioEngine *self)
   checkError(error, "SNDCTL_DSP_GETCAPS");
   if (!(self->audioInfo.caps & PCM_CAP_DUPLEX))
   {
-    g_message("Device doesn't support full duplex!\n");
+    g_message("Device doesn't support full duplex!");
     exit(1);
   }
 

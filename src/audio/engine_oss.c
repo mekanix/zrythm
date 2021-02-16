@@ -15,6 +15,10 @@
 
 #ifdef HAVE_OSS
 
+static const int32_t maxInt = 0x7FFFFFFF;
+static const float floatMaxInt = maxInt;
+
+
 /* Error state is indicated by value=-1 in which case application exits
  * with error
  */
@@ -40,6 +44,36 @@ size2frag(int x)
 }
 
 
+static void
+ossSplit(AudioEngine *self, int32_t *input, float *output)
+{
+  int channel;
+  int index;
+  for (unsigned i = 0; i < self->block_length; ++i)
+  {
+    channel = i % 2;
+    index = i / 2;
+    output[channel * index] = ((float)input[i]) / floatMaxInt;
+  }
+}
+
+
+/* Convert channels into interleaved format and place it in output
+ * buffer
+ */
+static void
+ossMerge(AudioEngine *self, float *input, int32_t *output)
+{
+  for (int channel = 0; channel < 2; ++channel)
+  {
+    for (unsigned int index = 0; index < self->block_length ; ++index)
+    {
+      output[index * 2 + channel] = input[channel * index] / floatMaxInt;
+    }
+  }
+}
+
+
 static void *
 audio_thread (void * _self)
 {
@@ -50,12 +84,9 @@ audio_thread (void * _self)
   while (1)
   {
     read(self->fd, ibuf, bytes);
-    /* convert input to non-inverleaved
-     * engine_process
-     * convert output to interleaved
-     */
+    /* ossSplit(self, (int32_t *)ibuf, self->input_buffer); */
     engine_process(self, self->block_length);
-    /* self->monitor_out->l->buf */
+    ossMerge(self, self->monitor_out->l->buf, (int32_t *)obuf);
     write(self->fd, obuf, bytes);
   }
   return NULL;

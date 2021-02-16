@@ -1,4 +1,5 @@
 #include <sys/ioctl.h>
+#include <pthread.h>
 
 #include "audio/channel.h"
 #include "audio/engine.h"
@@ -17,7 +18,7 @@
 /* Error state is indicated by value=-1 in which case application exits
  * with error
  */
-void
+static void
 checkError(const int value, const char *message)
 {
   if (value == -1)
@@ -30,12 +31,24 @@ checkError(const int value, const char *message)
 
 
 /* Calculate frag by giving it minimal size of buffer */
-int
+static int
 size2frag(int x)
 {
   int frag = 0;
   while ((1 << frag) < x) { ++frag; }
   return frag;
+}
+
+
+static void *
+audio_thread (void * _self)
+{
+  AudioEngine * self = (AudioEngine *) _self;
+  while (1)
+  {
+    // TODO
+  }
+  return NULL;
 }
 
 
@@ -114,6 +127,14 @@ engine_oss_setup (AudioEngine *self)
   checkError(error, "SNDCTL_DSP_GETOSPACE");
   self->block_length = self->bufferInfo.bytes / 4 / self->audioInfo.max_channels;
 
+  pthread_t thread_id;
+  int ret = pthread_create(&thread_id, NULL, &audio_thread, self);
+  if (ret)
+  {
+    g_message("Failed to create OSS audio thread:");
+    return -1;
+  }
+
   g_message ("OSS setup complete");
   return 0;
 }
@@ -140,6 +161,7 @@ engine_oss_test (
 {
   return 0;
 }
+
 
 void
 engine_oss_tear_down (AudioEngine *self)

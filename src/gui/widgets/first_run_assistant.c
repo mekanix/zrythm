@@ -26,6 +26,7 @@
 #include "audio/engine.h"
 #include "audio/engine_alsa.h"
 #include "audio/engine_jack.h"
+#include "audio/engine_oss.h"
 #include "audio/engine_pa.h"
 #include "audio/engine_pulse.h"
 #include "gui/widgets/first_run_assistant.h"
@@ -125,6 +126,12 @@ audio_midi_backend_selection_validate (
       if (engine_alsa_test (GTK_WINDOW (self)))
         return;
 #endif
+      break;
+#endif
+#ifdef HAVE_OSS
+    case MIDI_BACKEND_OSS:
+      if (engine_oss_test (GTK_WINDOW (self)))
+        return;
       break;
 #endif
     default:

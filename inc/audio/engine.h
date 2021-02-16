@@ -273,6 +273,7 @@ typedef enum MidiBackend
   MIDI_BACKEND_WINDOWS_MME,
   MIDI_BACKEND_WINDOWS_MME_RTMIDI,
   MIDI_BACKEND_COREMIDI_RTMIDI,
+  MIDI_BACKEND_OSS,
   NUM_MIDI_BACKENDS,
 } MidiBackend;
 
@@ -298,6 +299,7 @@ static const char * midi_backend_str[] =
   "Windows MME",
   "Windows MME (rtmidi)",
   "CoreMIDI (rtmidi)",
+  "OSS",
 };
 
 typedef enum AudioEngineJackTransportType

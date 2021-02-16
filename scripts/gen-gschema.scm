@@ -255,12 +255,12 @@ Args:
              "pulseaudio-rtaudio"
              "coreaudio-libsoundio" "coreaudio-rtaudio"
              "sdl" "wasapi-libsoundio"
-             "wasapi-rtaudio" "asio-rtaudio"))
+             "wasapi-rtaudio" "asio-rtaudio" "oss"))
          (print-enum
            "midi-backend"
            '("none" "alsa" "alsa-rtmidi" "jack"
              "jack-rtmidi" "wmme" "wmme-rtmidi"
-             "coremidi-rtmidi"))
+             "coremidi-rtmidi" "oss"))
          (print-enum
            "language"
            '("af_ZA" "ar" "de" "en"

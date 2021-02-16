@@ -119,6 +119,28 @@ engine_oss_setup (AudioEngine *self)
 }
 
 
+void engine_oss_activate (
+  AudioEngine * self,
+  gboolean      activate)
+{
+  if (activate)
+  {
+    g_message ("activating...");
+  }
+  else
+  {
+    g_message ("deactivating...");
+  }
+}
+
+
+int
+engine_oss_test (
+  GtkWindow * win)
+{
+  return 0;
+}
+
 void
 engine_oss_tear_down (AudioEngine *self)
 {

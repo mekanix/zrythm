@@ -716,6 +716,9 @@ ui_create_audio_backends_model (void)
     AUDIO_BACKEND_ASIO_RTAUDIO,
   #endif
 #endif /* _WOE32 */
+#ifdef HAVE_OSS
+    AUDIO_BACKEND_OSS,
+#endif
   };
   const gchar *labels[] = {
     _(audio_backend_str[AUDIO_BACKEND_DUMMY]),
@@ -769,6 +772,9 @@ ui_create_audio_backends_model (void)
     _(audio_backend_str[AUDIO_BACKEND_ASIO_RTAUDIO]),
   #endif
 #endif /* _WOE32 */
+#ifdef HAVE_OSS
+    _(audio_backend_str[AUDIO_BACKEND_OSS]),
+#endif
   };
 
   CREATE_SIMPLE_MODEL_BOILERPLATE;

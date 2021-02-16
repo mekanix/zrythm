@@ -438,6 +438,11 @@ init_common (
       self->audio_backend = ab_code;
       break;
 #endif
+#ifdef HAVE_OSS
+    case AUDIO_BACKEND_OSS:
+      self->audio_backend = AUDIO_BACKEND_OSS;
+      break;
+#endif
     default:
       self->audio_backend = AUDIO_BACKEND_DUMMY;
       g_warning (
@@ -742,6 +747,13 @@ engine_activate (
         self->audio_backend))
     {
       engine_rtaudio_activate (self, activate);
+    }
+#endif
+#ifdef HAVE_OSS
+  if (self->audio_backend
+        == AUDIO_BACKEND_OSS)
+    {
+      engine_oss_activate (self, activate);
     }
 #endif
 

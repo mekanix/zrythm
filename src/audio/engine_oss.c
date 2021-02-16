@@ -101,6 +101,8 @@ engine_oss_setup (AudioEngine *self)
   int tmp;
   /* Open the device for read and write */
   self->device = "/dev/dsp";
+  self->sample_rate = 48000;
+  self->format = AFMT_S32_NE; /* Signed 32bit native endian format */
   self->fd = open(self->device, O_RDWR);
   checkError(self->fd, "open");
 
@@ -125,7 +127,6 @@ engine_oss_setup (AudioEngine *self)
   }
 
   /* Set format, or bit size: 8, 16, 24 or 32 bit sample */
-  self->format = AFMT_S32_NE; /* Signed 32bit native endian format */
   tmp = self->format;
   error = ioctl(self->fd, SNDCTL_DSP_SETFMT, &tmp);
   checkError(error, "SNDCTL_DSP_SETFMT");
